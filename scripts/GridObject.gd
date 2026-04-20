@@ -7,6 +7,7 @@ var data: MachineData
 var held_items: Array = [] 
 var leader: Vector2i
 var is_powered = false
+var is_generating = false
 
 func _init(_pos: Vector2i, _dir: Vector2i, _data: MachineData):
 	pos = _pos

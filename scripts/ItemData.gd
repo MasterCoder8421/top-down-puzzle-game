@@ -8,8 +8,9 @@ var texture_id
 var atlas_coords
 
 var materials = {
-	"Raw Iron": {"atlas_coord": Vector2i(0, 4)},
-	"Iron": {"atlas_coord": Vector2i(1, 4)}
+	"Raw Iron": {"atlas_coord": Vector2i(0, 5)},
+	"Iron": {"atlas_coord": Vector2i(1, 5)},
+	"Coal": {"atlas_coord": Vector2i(3, 5)}
 }
 
 func _init(_pos: Vector2i, _name: String):

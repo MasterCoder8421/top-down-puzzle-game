@@ -20,14 +20,14 @@ var selected_style = StyleBoxFlat.new()
 
 var materials = [
 	{"name": "Empty", "tile_id": -1, "atlas_coords": Vector2i(0, 0), "size_x":1, "size_y":1,"can_rotate":false, "class":null},
-	{"name": "Conveyer", "tile_id": 1, "atlas_coords": Vector2i(1, 0), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerStraightData},
+	{"name": "Conveyer", "tile_id": 1, "atlas_coords": Vector2i(11, 1), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerStraightData},
 	{"name": "Conveyer_Right", "tile_id": 1, "atlas_coords": Vector2i(11, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedRightData},
 	{"name": "Conveyer_Left", "tile_id": 1, "atlas_coords": Vector2i(14, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedLeftData},
-	{"name": "Furnace", "tile_id": 1, "atlas_coords": Vector2i(0, 1), "size_x":3, "size_y":3,"can_rotate":false, "class":FurnaceData},
-	{"name": "Test", "tile_id": 1, "atlas_coords": Vector2i(3, 2), "size_x":2, "size_y":1,"can_rotate":false, "class":MachineData},
+	{"name": "Furnace", "tile_id": 1, "atlas_coords": Vector2i(0, 2), "size_x": 3, "size_y": 1,"can_rotate":false, "class":FurnaceData},
+	{"name": "Test", "tile_id": 1, "atlas_coords": Vector2i(3, 2), "size_x": 1, "size_y": 1,"can_rotate":false, "class":MachineData},
 	{"name": "Low Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(0, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": LowVoltageMachineData},
 	{"name": "High Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(1, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": HighVoltageMachineData},
-	{"name": "Generator","tile_id": 1, "atlas_coords": Vector2i(8, 2), "size_x": 1,"size_y": 1,"can_rotate": false,"class": GeneratorData}
+	{"name": "Generator","tile_id": 1, "atlas_coords": Vector2i(0, 12), "size_x": 2,"size_y": 1,"can_rotate": false,"class": GeneratorData},
 ]
 
 func _ready():
@@ -74,7 +74,7 @@ func process_build_logic():
 	var mouse_pos = tilemap.get_local_mouse_position()
 	var pos = tilemap.local_to_map(mouse_pos)
 	
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		place(pos)
 	queue_redraw()
 
@@ -168,7 +168,7 @@ func handle_camera(event):
 	if event.is_action_pressed("rotate"):
 		current_rotation = (current_rotation + 3) % 4
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
 			startDragging = get_viewport().get_mouse_position()
 			dragging = event.pressed
 		if event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
