@@ -2,6 +2,35 @@ extends Resource
 class_name MachineData
 
 @export var max_items = 0
+var voltage_type = 0
+var name: String = "Empty"
+var tileId: int = -1
+var atlas_coords: Vector2i = Vector2i(0, 0)
+var size: Vector2i = Vector2i(1, 1)
+var can_rotate: bool = false
+var unbreakable: bool = false
+
+func get_naame():
+	return name
+
+func get_tile_id():
+	return tileId
+
+func get_atlas_coords():
+	return atlas_coords
+
+func get_step_texture_update(_object: GridObject, _step_count: int):
+	return false
+
+func get_size():
+	return size
+
+func get_can_rotate():
+	return can_rotate
+
+func get_unbreakable():
+	return unbreakable
+
 
 func _init():
 	max_items=0
@@ -27,9 +56,8 @@ func will_output(object) -> bool:
 func along(object, val):
 	return object.pos
 
-func get_port_type(object: GridObject, side_dir: Vector2i) -> int:
-	# 0 = None, 1 = Low, 2 = High
-	return 0
+func get_port_type(object: GridObject, side_dir: Vector2i, target_pos: Vector2i) -> int:
+	return voltage_type
 
 func reset():
 	pass
@@ -49,7 +77,5 @@ func get_possible_neighbour(my_obj: GridObject):
 		[my_pos + Vector2i(-1, 0), Vector2i(-1, 0)]
 	]
 
-func can_connect_to(my_obj: GridObject, neighbor_obj: GridObject, dir_to_neighbor: Vector2i) -> bool:
-	var my_port = self.get_port_type(my_obj, dir_to_neighbor)
-	var neighbor_port = neighbor_obj.data.get_port_type(neighbor_obj, -dir_to_neighbor)	
-	return my_port != 0 and my_port == neighbor_port
+func update(object):
+	pass

@@ -1,6 +1,14 @@
 extends ConveyerData
 class_name ConveyerCurvedRightData
 
+func _init():
+	super()
+	name = "Conveyer Right"
+	tileId = 1
+	atlas_coords = Vector2i(11, 2)
+	size = Vector2i(1, 1)
+	can_rotate = true
+
 func get_output_direction(object):
 	return Vector2i(Vector2(object.direction).rotated(deg_to_rad(-90)))
 

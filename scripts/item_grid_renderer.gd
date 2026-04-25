@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var main = get_parent()
-var atlas_tex =null
+var atlas_tex = null
 var scaling = 5
 
 func _ready():

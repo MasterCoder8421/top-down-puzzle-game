@@ -7,9 +7,7 @@ extends Node2D
 @onready var camera = $"../Camera2D"
 @onready var button_container = $"../CanvasLayer/Control/HBoxContainer"
 
-var current_tile_id = -1
-var current_atlas_coords = Vector2i(0, 0)
-var current_list_id = 0
+var current_data = MachineData
 var current_rotation = 0
 var dragging = false
 var startDragging = Vector2(0, 0)
@@ -18,46 +16,56 @@ var zoom_cooldown = 0.0
 var material_group = ButtonGroup.new()
 var selected_style = StyleBoxFlat.new()
 
+# var materials = [
+# 	{"name": "Empty", "tile_id": -1, "atlas_coords": Vector2i(0, 0), "size_x":1, "size_y":1,"can_rotate":false, "class":null},
+# 	{"name": "Conveyer", "tile_id": 1, "atlas_coords": Vector2i(11, 1), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerStraightData},
+# 	{"name": "Conveyer_Right", "tile_id": 1, "atlas_coords": Vector2i(11, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedRightData},
+# 	{"name": "Conveyer_Left", "tile_id": 1, "atlas_coords": Vector2i(14, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedLeftData},
+# 	{"name": "Furnace", "tile_id": 1, "atlas_coords": Vector2i(0, 2), "size_x": 3, "size_y": 1,"can_rotate":false, "class":FurnaceData},
+# 	{"name": "Test", "tile_id": 1, "atlas_coords": Vector2i(3, 2), "size_x": 1, "size_y": 1,"can_rotate":false, "class":MachineData},
+# 	{"name": "Low Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(0, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": LowVoltageMachineData},
+# 	{"name": "High Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(1, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": HighVoltageMachineData},
+# 	{"name": "Generator","tile_id": 1, "atlas_coords": Vector2i(0, 12), "size_x": 2,"size_y": 1,"can_rotate": false,"class": CoalGenData},
+# ]
+
 var materials = [
-	{"name": "Empty", "tile_id": -1, "atlas_coords": Vector2i(0, 0), "size_x":1, "size_y":1,"can_rotate":false, "class":null},
-	{"name": "Conveyer", "tile_id": 1, "atlas_coords": Vector2i(11, 1), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerStraightData},
-	{"name": "Conveyer_Right", "tile_id": 1, "atlas_coords": Vector2i(11, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedRightData},
-	{"name": "Conveyer_Left", "tile_id": 1, "atlas_coords": Vector2i(14, 2), "size_x":1, "size_y":1,"can_rotate":true, "class":ConveyerCurvedLeftData},
-	{"name": "Furnace", "tile_id": 1, "atlas_coords": Vector2i(0, 2), "size_x": 3, "size_y": 1,"can_rotate":false, "class":FurnaceData},
-	{"name": "Test", "tile_id": 1, "atlas_coords": Vector2i(3, 2), "size_x": 1, "size_y": 1,"can_rotate":false, "class":MachineData},
-	{"name": "Low Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(0, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": LowVoltageMachineData},
-	{"name": "High Voltage Wire","tile_id": 0, "atlas_coords": Vector2i(1, 0), "size_x": 1,"size_y": 1,"can_rotate": false,"class": HighVoltageMachineData},
-	{"name": "Generator","tile_id": 1, "atlas_coords": Vector2i(0, 12), "size_x": 2,"size_y": 1,"can_rotate": false,"class": GeneratorData},
+	MachineData,
+	ConveyerStraightData,
+	ConveyerCurvedRightData,
+	ConveyerCurvedLeftData,
+	FurnaceData,
+	MachineData,
+	LowVoltageMachineData,
+	HighVoltageMachineData,
+	CoalGenData
 ]
 
 func _ready():
 	var i = 0
 	selected_style.bg_color = Color.GREEN 
 	selected_style.set_corner_radius_all(4)
-	for mat in materials:
+	for material in materials:
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(64, 64)
 		btn.expand_icon = true
 		btn.focus_mode = Control.FOCUS_NONE
-		btn.toggle_mode = true          # Allows the button to stay pressed
+		btn.toggle_mode = true
 		btn.button_group = material_group
 		btn.add_theme_stylebox_override("pressed", selected_style)
 		btn.add_theme_stylebox_override("hover_pressed", selected_style)
-		mat["index"] = i
-		if mat["tile_id"] != -1:
-			var source = tilemap.tile_set.get_source(mat["tile_id"])
+		var mat = material.new()
+		if mat.get_tile_id() != -1:
+			var source = tilemap.tile_set.get_source(mat.get_tile_id())
 			var atlas_tex = AtlasTexture.new()
 			atlas_tex.atlas = source.texture
-			atlas_tex.region = source.get_tile_texture_region(mat["atlas_coords"])
+			atlas_tex.region = source.get_tile_texture_region(mat.get_atlas_coords())
 			btn.icon = atlas_tex
-		btn.pressed.connect(_on_material_selected.bind(mat))
+		btn.pressed.connect(_on_material_selected.bind(material))
 		button_container.add_child(btn)
 		i += 1
 
 func _on_material_selected(mat_data):
-	current_tile_id = mat_data["tile_id"]
-	current_atlas_coords = mat_data["atlas_coords"]
-	current_list_id = mat_data["index"]
+	current_data = mat_data
 
 func handle_panning():
 	zoom_cooldown -= get_process_delta_time()
@@ -99,7 +107,10 @@ func update_wire_visual(check_pos: Vector2i):
 	for dir in dirs:
 		var neighbor_pos = check_pos + dir
 		var neighbor = SimulationData.grid_logic.get(neighbor_pos)
-		if neighbor and obj.data.can_connect_to(obj, neighbor, dir):
+		if not neighbor:
+			continue
+		neighbor = SimulationData.grid_logic.get(neighbor.leader)
+		if obj.data.get_port_type(obj, dir, obj.pos) == neighbor.data.get_port_type(neighbor, -dir, neighbor_pos):
 			mask += dirs[dir]
 	
 	var atlas_x: int
@@ -114,6 +125,9 @@ func delete(pos):
 		return
 	var obj = SimulationData.grid_logic.get(pos)
 	var leader_pos = obj.leader
+	var leader_obj = SimulationData.grid_logic.get(leader_pos)
+	if leader_obj != null and leader_obj.data.get_unbreakable():
+		return
 	var affected_nodes = []
 	for p in SimulationData.grid_logic:
 		if SimulationData.grid_logic[p].leader == leader_pos:
@@ -127,25 +141,24 @@ func delete(pos):
 	refresh_area(leader_pos, Vector2i(1, 1))
 
 func place(pos):
-	if current_tile_id==-1:
+	if current_data.new().get_tile_id()==-1:
 		delete(pos)
 		return
-	var size_x = materials[current_list_id]["size_x"]
-	var size_y = materials[current_list_id]["size_y"]
-	if !can_place(pos, size_x, size_y): return
-	if current_tile_id==1:
-		tilemap.set_cell(pos, current_tile_id, current_atlas_coords, get_transforms())
-		tilemapmask.set_cell(pos, current_tile_id+1, current_atlas_coords, get_transforms())
+	var size = current_data.new().get_size()
+	if !can_place(pos, size.x, size.y): return
+	if current_data.get_tile_id()==1:
+		tilemap.set_cell(pos, current_data.new().get_tile_id(), current_data.new().get_atlas_coords(), get_transforms())
+		tilemapmask.set_cell(pos, current_data.new().get_tile_id()+1,current_data.new().get_atlas_coords(), get_transforms())
 	else:
-		tilemap.set_cell(pos, current_tile_id, current_atlas_coords, get_transforms())
+		tilemap.set_cell(pos, current_data.new().get_tile_id(), current_data.new().get_atlas_coords(), get_transforms())
 	var dir = Vector2i(Vector2.DOWN.rotated(deg_to_rad(-current_rotation * 90)).round())
-	var obj = GridObject.new(pos, dir, materials[current_list_id]["class"].new())
+	var obj = GridObject.new(pos, dir, current_data.new())
 	obj.leader = pos
-	for i in range(size_x):
-		for j in range(size_y):
+	for i in range(size.x):
+		for j in range(size.y):
 			SimulationData.grid_logic[pos+Vector2i(i, j)] = obj
 			
-	refresh_area(pos, Vector2i(size_x, size_y))
+	refresh_area(pos, Vector2i(size.x, size.y))
 
 func can_place(pos, size_x, size_y):
 	for i in range(size_x):
@@ -155,7 +168,7 @@ func can_place(pos, size_x, size_y):
 	return true
 
 func get_transforms():
-	if !materials[current_list_id]["can_rotate"]:
+	if !current_data.new().get_can_rotate():
 		return 0
 	var t = TileSetAtlasSource
 	match current_rotation:

@@ -1,13 +1,14 @@
 extends MachineData
 class_name LowVoltageMachineData
 
-var voltage_type: int
-
 func _init():
-	voltage_type = 1 
+	name = "Low Voltage Wirte"
+	tileId = 0
+	atlas_coords = Vector2i(0, 0)
+	size = Vector2i(1, 1)
+	can_rotate = false
+	voltage_type = 1
 
-func get_port_type(object: GridObject, side_dir: Vector2i) -> int:
-	return voltage_type
 
 func is_wire():
 	return true

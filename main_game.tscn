@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://pvn50ee6hx5o" path="res://scripts/item_grid_renderer.gd" id="3_ykeeq"]
 [ext_resource type="Script" uid="uid://bltnewyalx46s" path="res://scripts/BuildManager.gd" id="4_6bm6p"]
 [ext_resource type="Texture2D" uid="uid://brbtdxlgeph43" path="res://sprite_sheet_mask.png" id="4_f52ns"]
+[ext_resource type="Texture2D" uid="uid://d3rrle0d20yiy" path="res://generatoranimation.png" id="5_l5ukw"]
 [ext_resource type="Script" uid="uid://dwcmlwocf7ua1" path="res://scripts/build_preview.gd" id="7_f52ns"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f52ns"]
@@ -249,11 +250,33 @@ texture_region_size = Vector2i(32, 32)
 0:12/0 = 0
 0:12/0/texture_origin = Vector2i(-16, 0)
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4srsv"]
+texture = ExtResource("5_l5ukw")
+texture_region_size = Vector2i(32, 32)
+2:0/0 = 0
+7:4/0 = 0
+0:0/size_in_atlas = Vector2i(2, 1)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(-16, 0)
+0:1/size_in_atlas = Vector2i(2, 1)
+0:1/0 = 0
+0:1/0/texture_origin = Vector2i(-16, 0)
+0:2/size_in_atlas = Vector2i(2, 1)
+0:2/0 = 0
+0:2/0/texture_origin = Vector2i(-16, 0)
+0:3/size_in_atlas = Vector2i(2, 1)
+0:3/0 = 0
+0:3/0/texture_origin = Vector2i(-16, 0)
+0:4/size_in_atlas = Vector2i(2, 1)
+0:4/0 = 0
+0:4/0/texture_origin = Vector2i(-16, 0)
+
 [sub_resource type="TileSet" id="TileSet_dugkq"]
 tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_f52ns")
 sources/1 = SubResource("TileSetAtlasSource_2pltu")
 sources/2 = SubResource("TileSetAtlasSource_l5ukw")
+sources/3 = SubResource("TileSetAtlasSource_4srsv")
 
 [node name="Node2D" type="Node2D" unique_id=19894873]
 z_index = 100

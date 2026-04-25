@@ -39,6 +39,7 @@ func get_output_direction() -> Vector2i:
 	return data.get_output_direction(self)
 
 func push_item(item: ItemData) -> void:
+	print("pushed", pos, item)
 	held_items.append(item)
 
 func pop_item(item: ItemData) -> void:

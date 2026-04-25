@@ -3,11 +3,12 @@ class_name InputData
 var first = true
 var item_name = ""
 var timer = 0
-var TIME_SET = 1
+var TIME_SET = 5
 
-func _init(_item_name):
+func _init(_item_name, _time_set: int = 5):
 	max_items = 1
 	item_name = _item_name
+	TIME_SET = maxi(1, _time_set)
 	
 func get_display_item(object) -> ItemData:
 	return null

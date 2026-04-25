@@ -1,6 +1,15 @@
 extends ConveyerData
 class_name ConveyerStraightData
 
+func _init():
+	super()
+	name = "Conveyer"
+	tileId = 1
+	atlas_coords = Vector2i(11, 1)
+	size = Vector2i(1, 1)
+	can_rotate = true
+
+
 func get_output_direction(object):
 	return object.direction
 
